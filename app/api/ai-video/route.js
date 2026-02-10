@@ -51,16 +51,17 @@ function getEnvironmentDescription(environmentLevel) {
     return 'highly immersive environment with dramatic atmosphere and dense detail';
 }
 
-export async function POST(request) {
-    const apiKey = process.env.REPLICATE_API_TOKEN;
+function clampRange(value) {
+    const numericValue = Number(value);
 
-    if (!apiKey) {
-        return Response.json(
-            { error: 'Missing REPLICATE_API_TOKEN. Add it to your environment variables first.' },
-            { status: 500 }
-        );
+    if (Number.isNaN(numericValue)) {
+        return 50;
     }
 
+    return Math.min(100, Math.max(0, numericValue));
+}
+
+export async function POST(request) {
     let body;
 
     try {
@@ -69,14 +70,25 @@ export async function POST(request) {
         return Response.json({ error: 'Request body must be valid JSON.' }, { status: 400 });
     }
 
-    const { prompt = '', scene = '', environment = 50, angle = 50, story = '' } = body;
+    const { apiKey: requestApiKey = '', prompt = '', scene = '', environment = 50, angle = 50, story = '' } = body;
+
+    const apiKey = requestApiKey.trim() || process.env.REPLICATE_API_TOKEN;
+
+    if (!apiKey) {
+        return Response.json(
+            {
+                error: 'Missing API key. Provide it in the form or set REPLICATE_API_TOKEN on the server.'
+            },
+            { status: 400 }
+        );
+    }
 
     if (!prompt.trim()) {
         return Response.json({ error: 'A prompt is required to generate a video.' }, { status: 400 });
     }
 
-    const angleLevel = Number(angle);
-    const environmentLevel = Number(environment);
+    const angleLevel = clampRange(angle);
+    const environmentLevel = clampRange(environment);
 
     const composedPrompt = [
         prompt.trim(),

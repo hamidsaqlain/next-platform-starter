@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 const defaultValues = {
+    apiKey: '',
     prompt: '',
     scene: '',
     story: '',
@@ -54,12 +55,22 @@ export default function AiVideoPage() {
             <section className="mb-8">
                 <h1 className="mb-4">AI Video Generator Tool</h1>
                 <p className="text-lg text-blue-100/90">
-                    Describe your scene and story, then tune camera angle and environment depth with sliders. The tool uses your API
-                    key from server environment variables.
+                    Describe your scene and story, then tune camera angle and environment depth with sliders.
                 </p>
             </section>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-6 rounded-md bg-white/95 text-neutral-900">
+                <label className="flex flex-col gap-2">
+                    Replicate API Key (optional if server env is already set)
+                    <input
+                        type="password"
+                        className="input"
+                        value={formValues.apiKey}
+                        onChange={setValue('apiKey')}
+                        placeholder="r8_..."
+                    />
+                </label>
+
                 <label className="flex flex-col gap-2">
                     Prompt
                     <textarea
