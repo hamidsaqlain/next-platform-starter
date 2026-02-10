@@ -39,3 +39,16 @@ netlify dev
 ```
 
 If your browser doesn't navigate to the site automatically, visit [localhost:8888](http://localhost:8888).
+
+## AI Video Generator Tool
+
+This starter now includes an `AI Video` page at `/ai-video` with a prompt form and sliders for camera angle and environment richness.
+
+To enable generation, either:
+
+- set `REPLICATE_API_TOKEN` on the server, or
+- paste a Replicate API key into the page form at runtime.
+
+Optional: `AI_VIDEO_MODEL` defaults to `kwaivgi/kling-v1.6-standard/text-to-video`.
+
+The `/ai-video` page includes a dedicated API Key Setup section where you can paste and save a Replicate key in your browser, then generate videos from prompts and sliders. The tool sends your prompt to `POST /api/ai-video`, composes scene + story + slider values into a cinematic prompt, then returns a generated video URL.
