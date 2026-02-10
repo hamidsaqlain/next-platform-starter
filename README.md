@@ -51,4 +51,4 @@ To enable generation, either:
 
 Optional: `AI_VIDEO_MODEL` defaults to `kwaivgi/kling-v1.6-standard/text-to-video`.
 
-The tool sends your prompt to `POST /api/ai-video`, composes scene + story + slider values into a cinematic prompt, then returns a generated video URL.
+The `/ai-video` page includes a dedicated API Key Setup section where you can paste and save a Replicate key in your browser, then generate videos from prompts and sliders. The tool sends your prompt to `POST /api/ai-video`, composes scene + story + slider values into a cinematic prompt, then returns a generated video URL.

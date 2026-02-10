@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 const defaultValues = {
     apiKey: '',
@@ -11,21 +11,77 @@ const defaultValues = {
     environment: 50
 };
 
+const STORAGE_KEY = 'replicate_api_key';
+
+function maskKey(value) {
+    if (!value) {
+        return '';
+    }
+
+    if (value.length <= 8) {
+        return '********';
+    }
+
+    return `${value.slice(0, 4)}...${value.slice(-4)}`;
+}
+
 export default function AiVideoPage() {
     const [formValues, setFormValues] = useState(defaultValues);
+    const [savedApiKey, setSavedApiKey] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [result, setResult] = useState(null);
+    const [notice, setNotice] = useState('');
+
+    useEffect(() => {
+        if (typeof window === 'undefined') {
+            return;
+        }
+
+        const storedKey = window.localStorage.getItem(STORAGE_KEY) ?? '';
+
+        if (storedKey) {
+            setSavedApiKey(storedKey);
+        }
+    }, []);
+
+    const activeApiKey = useMemo(() => formValues.apiKey.trim() || savedApiKey, [formValues.apiKey, savedApiKey]);
 
     const setValue = (key) => (event) => {
         setFormValues((prev) => ({ ...prev, [key]: event.target.value }));
+    };
+
+    const saveApiKey = () => {
+        const candidateKey = formValues.apiKey.trim();
+
+        if (!candidateKey) {
+            setNotice('Enter an API key first, then click Save API Key.');
+            return;
+        }
+
+        window.localStorage.setItem(STORAGE_KEY, candidateKey);
+        setSavedApiKey(candidateKey);
+        setNotice('API key saved in this browser. Now click Generate Video.');
+    };
+
+    const clearSavedApiKey = () => {
+        window.localStorage.removeItem(STORAGE_KEY);
+        setSavedApiKey('');
+        setNotice('Saved API key was removed from this browser.');
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         setLoading(true);
         setError('');
+        setNotice('');
         setResult(null);
+
+        if (!activeApiKey) {
+            setLoading(false);
+            setError('Paste your Replicate API key in the API Key section (or save one) before generating.');
+            return;
+        }
 
         try {
             const response = await fetch('/api/ai-video', {
@@ -33,7 +89,7 @@ export default function AiVideoPage() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formValues)
+                body: JSON.stringify({ ...formValues, apiKey: activeApiKey })
             });
 
             const data = await response.json();
@@ -55,21 +111,40 @@ export default function AiVideoPage() {
             <section className="mb-8">
                 <h1 className="mb-4">AI Video Generator Tool</h1>
                 <p className="text-lg text-blue-100/90">
-                    Describe your scene and story, then tune camera angle and environment depth with sliders.
+                    Add your API key, write your prompt and story details, adjust sliders, then generate your video.
+                </p>
+            </section>
+
+            <section className="mb-6 p-6 rounded-md bg-white/95 text-neutral-900">
+                <h2 className="mb-3 text-2xl">1) API Key Setup</h2>
+                <p className="mb-3 text-sm text-neutral-700">
+                    Paste your Replicate API key here. You can save it locally in your browser for repeated use.
+                </p>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
+                    <label className="flex flex-col gap-2 sm:flex-1">
+                        Replicate API Key
+                        <input
+                            type="password"
+                            className="input"
+                            value={formValues.apiKey}
+                            onChange={setValue('apiKey')}
+                            placeholder="r8_..."
+                        />
+                    </label>
+                    <button type="button" className="btn" onClick={saveApiKey}>
+                        Save API Key
+                    </button>
+                    <button type="button" className="btn" onClick={clearSavedApiKey}>
+                        Clear Saved Key
+                    </button>
+                </div>
+                <p className="mt-3 text-sm text-neutral-700">
+                    Active key: {activeApiKey ? `ready (${maskKey(activeApiKey)})` : 'not set'}
                 </p>
             </section>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-6 rounded-md bg-white/95 text-neutral-900">
-                <label className="flex flex-col gap-2">
-                    Replicate API Key (optional if server env is already set)
-                    <input
-                        type="password"
-                        className="input"
-                        value={formValues.apiKey}
-                        onChange={setValue('apiKey')}
-                        placeholder="r8_..."
-                    />
-                </label>
+                <h2 className="text-2xl">2) Video Prompt Setup</h2>
 
                 <label className="flex flex-col gap-2">
                     Prompt
@@ -125,9 +200,10 @@ export default function AiVideoPage() {
                 </label>
 
                 <button type="submit" className="btn" disabled={loading}>
-                    {loading ? 'Generating Video...' : 'Generate Video'}
+                    {loading ? 'Generating Video...' : '3) Generate Video'}
                 </button>
 
+                {notice ? <p className="font-medium text-green-700">{notice}</p> : null}
                 {error ? <p className="font-medium text-red-700">{error}</p> : null}
             </form>
 
