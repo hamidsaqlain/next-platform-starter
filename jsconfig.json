@@ -1,5 +1,8 @@
-{ 
-    "compilerOptions": {
-        "baseUrl": "."
-      }    
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "framer-motion": ["lib/framer-motion.js"]
+    }
+  }
 }
