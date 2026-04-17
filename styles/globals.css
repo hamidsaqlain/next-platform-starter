@@ -1,157 +1,233 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap');
 @import 'tailwindcss';
 
-@theme {
-    --background-image-noise: linear-gradient(
-            to bottom,
-            color-mix(in oklab, var(--color-neutral-950) 0%, transparent),
-            color-mix(in oklab, var(--color-neutral-950) 100%, transparent)
-        ),
-        url('/images/noise.png');
-    --color-primary: #2bdcd2;
-    --color-primary-content: #171717;
-    --color-secondary: #016968;
-    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+:root {
+  --bg: #f6f7fb;
+  --bg-elevated: rgba(255, 255, 255, 0.74);
+  --surface: #ffffffb5;
+  --text: #0e1322;
+  --muted: #55607a;
+  --primary: #5b7cfa;
+  --primary-soft: #9a7cff;
+  --card-border: rgba(11, 17, 33, 0.08);
 }
 
-@layer base {
-    h1 {
-        @apply text-4xl font-bold tracking-tight sm:text-5xl;
-    }
-
-    h2 {
-        @apply text-2xl font-bold sm:text-3xl;
-    }
-
-    h3 {
-        @apply text-xl font-bold;
-    }
-
-    a:not(.btn) {
-        @apply underline transition hover:opacity-80;
-    }
-
-    :not(pre) > code {
-        @apply px-1 py-0.5 font-mono rounded bg-neutral-900 text-yellow-200;
-        font-size: 0.9em;
-    }
+:root.dark {
+  --bg: #060915;
+  --bg-elevated: rgba(11, 15, 29, 0.7);
+  --surface: #070d1bcc;
+  --text: #eef2ff;
+  --muted: #9ca8c9;
+  --primary: #7ba2ff;
+  --primary-soft: #a987ff;
+  --card-border: rgba(255, 255, 255, 0.1);
 }
 
-@layer components {
-    .markdown {
-        > * {
-            @apply my-4;
-        }
+* {
+  scroll-behavior: smooth;
+}
 
-        :where(h1, h2) {
-            @apply mt-12 mb-6;
-        }
+body {
+  margin: 0;
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(123, 162, 255, 0.2), transparent 30%),
+    radial-gradient(circle at 100% 0%, rgba(169, 135, 255, 0.18), transparent 34%),
+    var(--bg);
+  min-height: 100vh;
+}
 
-        > :first-child {
-            @apply mt-0;
-        }
+a {
+  text-decoration: none;
+}
 
-        > :last-child {
-            @apply mb-0;
-        }
-    }
+.container-main {
+  @apply w-full max-w-6xl px-5 mx-auto md:px-8;
+}
 
-    .btn {
-        @apply inline-flex items-center justify-center gap-2 font-bold text-center no-underline transition-colors cursor-pointer bg-primary text-primary-content;
-        padding: var(--btn-py, 0.875rem) var(--btn-px, 1.25rem);
-        font-size: var(--btn-font-size, 0.875rem);
-        border-radius: var(--btn-border-radius, 0.25rem);
+.section-space {
+  @apply py-14 md:py-20;
+}
 
-        &:hover {
-            @apply bg-primary/85;
-        }
+.section-space-sm {
+  @apply py-8 md:py-10;
+}
 
-        &:disabled {
-            @apply cursor-default text-neutral-400 bg-neutral-700;
-        }
-    }
+.section-eyebrow {
+  @apply mb-3 text-xs font-semibold uppercase tracking-[0.2em];
+  color: var(--primary);
+}
 
-    .btn-lg {
-        --btn-font-size: 1.125rem;
-        --btn-px: 1.5rem;
-        --btn-py: 1.125rem;
-    }
+.section-title {
+  @apply text-3xl font-semibold leading-tight md:text-5xl;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
 
-    .input {
-        @apply px-4 py-3 text-sm border rounded-sm border-neutral-300 text-neutral-900 focus:border-primary focus:outline-3 focus:outline-primary/30;
-    }
+.section-description {
+  @apply mt-4 text-base md:text-lg;
+  color: var(--muted);
+}
 
-    .diff {
-        direction: ltr;
-        container-type: inline-size;
-        grid-template-columns: auto 1fr;
+.hero-grid {
+  @apply grid items-center gap-10 md:grid-cols-[1.2fr_0.8fr];
+}
 
-        &:focus-visible,
-        &:has(.diff-item-1:focus),
-        &:has(.diff-item-2:focus) {
-            outline: 2px solid var(--color-gray-400);
-            outline-offset: 1px;
-        }
-        &:focus-visible {
-            .diff-resizer {
-                min-width: 80cqi;
-                max-width: 80cqi;
-            }
-        }
-        &:has(.diff-item-2:focus-visible) {
-            .diff-resizer {
-                min-width: 20cqi;
-                max-width: 20cqi;
-            }
-        }
-    }
+.hero-title {
+  @apply text-4xl font-semibold leading-tight md:text-6xl;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+}
 
-    .diff-resizer {
-        width: 50cqi;
-        max-width: calc(100cqi - 1rem);
-        transform: scaleY(3) translate(0.35rem, 0.08rem);
-        transform-origin: 100% 100%;
-        clip-path: inset(calc(100% - 0.75rem) 0 0 calc(100% - 0.75rem));
-        transition: min-width 0.3s ease-out, max-width 0.3s ease-out;
-    }
+.hero-subtitle {
+  @apply mt-6 text-lg md:text-xl;
+  color: var(--muted);
+}
 
-    .diff-item-2 {
-        &:after {
-            content: '';
-            width: 1.25rem;
-            height: 1.875rem;
-            position: absolute;
-            top: 50%;
-            right: 1px;
-            bottom: 0;
-            translate: 50% -50%;
-            background: color-mix(in oklab, var(--color-white) 50%, transparent);
-            border-radius: 9999px;
-            border: 2px solid var(--color-white);
-            backdrop-filter: blur(8px);
-            pointer-events: none;
-            z-index: 2;
-            box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--color-gray-900) 5%, transparent),
-                0 1px 3px 0 color-mix(in oklab, var(--color-gray-900) 20%, transparent);
-        }
-        @supports (-webkit-overflow-scrolling: touch) and (overflow: -webkit-paged-x) {
-            &:after {
-                content: none;
-            }
-        }
-    }
+.glass-panel {
+  @apply p-6 border shadow-2xl rounded-2xl md:p-7;
+  border-color: var(--card-border);
+  background: linear-gradient(135deg, color-mix(in oklab, var(--bg-elevated), transparent 8%), color-mix(in oklab, var(--bg-elevated), transparent 20%));
+  backdrop-filter: blur(16px);
+}
 
-    .diff-item-1,
-    .diff-item-2 {
-        > * {
-            height: 100%;
-            width: 100cqi;
-            position: absolute;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-        }
-    }
+.card-hover {
+  @apply transition duration-300;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 18px 40px rgba(12, 20, 44, 0.2);
+}
+
+.nav-shell {
+  @apply flex items-center justify-between py-4;
+}
+
+.brand-mark {
+  @apply text-lg font-semibold tracking-tight;
+}
+
+.nav-link {
+  @apply text-sm transition-opacity;
+  color: var(--muted);
+}
+
+.nav-link:hover {
+  opacity: 0.7;
+}
+
+.btn-primary,
+.btn-secondary,
+.theme-toggle {
+  @apply inline-flex items-center justify-center px-5 py-3 text-sm font-semibold transition-all rounded-xl;
+}
+
+.btn-primary {
+  color: #fff;
+  background: linear-gradient(120deg, var(--primary), var(--primary-soft));
+}
+
+.btn-primary:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.btn-secondary,
+.theme-toggle {
+  @apply border;
+  border-color: var(--card-border);
+  background: color-mix(in oklab, var(--bg-elevated), transparent 20%);
+}
+
+.btn-secondary {
+  color: var(--text);
+}
+
+.theme-toggle {
+  color: var(--muted);
+}
+
+.proof-bar {
+  @apply flex flex-col gap-6 md:flex-row md:items-center md:justify-between;
+}
+
+.proof-client {
+  @apply text-sm font-medium;
+  color: var(--muted);
+}
+
+.proof-metrics {
+  @apply grid grid-cols-2 gap-4 sm:grid-cols-4;
+}
+
+.hero-stat-card h3 {
+  @apply mt-3 mb-6 text-xl font-semibold;
+}
+
+.hero-stat-card strong {
+  @apply text-lg;
+}
+
+blockquote {
+  @apply text-lg font-medium leading-relaxed;
+}
+
+.cta-panel {
+  @apply py-12 md:py-14;
+}
+
+.footer-shell {
+  @apply flex flex-col gap-3 py-8 text-sm md:flex-row md:items-center md:justify-between md:py-10;
+  color: var(--muted);
+}
+
+.floating-cta {
+  @apply fixed z-40 px-4 py-3 text-sm font-semibold shadow-2xl bottom-5 right-5 rounded-xl;
+  color: #fff;
+  background: linear-gradient(130deg, var(--primary), var(--primary-soft));
+}
+
+.cursor-glow {
+  position: fixed;
+  width: 180px;
+  height: 180px;
+  pointer-events: none;
+  border-radius: 9999px;
+  opacity: 0.4;
+  background: radial-gradient(circle, color-mix(in oklab, var(--primary), transparent 30%) 0%, transparent 65%);
+  filter: blur(6px);
+  z-index: 5;
+}
+
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  gap: 14px;
+  place-content: center;
+  color: var(--muted);
+  background: var(--bg);
+}
+
+.loader-ring {
+  width: 44px;
+  height: 44px;
+  border: 3px solid color-mix(in oklab, var(--primary), transparent 55%);
+  border-top-color: var(--primary);
+  border-radius: 9999px;
+  animation: spin 0.85s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .cursor-glow {
+    display: none;
+  }
 }

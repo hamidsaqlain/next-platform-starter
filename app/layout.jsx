@@ -1,29 +1,22 @@
 import '../styles/globals.css';
-import { Footer } from '../components/footer';
-import { Header } from '../components/header';
 
 export const metadata = {
-    title: {
-        template: '%s | Netlify',
-        default: 'Netlify Starter'
-    }
+  title: 'AI Content Marketer & Video Editor | Premium Portfolio',
+  description:
+    'Premium portfolio for an AI-powered content strategist and video editor helping founders, CXOs, and personal brands scale authority and revenue.',
+  metadataBase: new URL('https://example.com'),
+  openGraph: {
+    title: 'AI Content Marketer & Video Editor',
+    description: 'Conversion-focused content systems and performance video editing for high-ticket client growth.',
+    type: 'website'
+  },
+  keywords: ['AI content strategist', 'video editor', 'founder personal brand', 'high-ticket leads', 'content marketing']
 };
 
 export default function RootLayout({ children }) {
-    return (
-        <html lang="en">
-            <head>
-                <link rel="icon" href="/favicon.svg" sizes="any" />
-            </head>
-            <body className="antialiased text-white bg-blue-900">
-                <div className="flex flex-col min-h-screen px-6 bg-noise sm:px-12">
-                    <div className="flex flex-col w-full max-w-5xl mx-auto grow">
-                        <Header />
-                        <main className="grow">{children}</main>
-                        <Footer />
-                    </div>
-                </div>
-            </body>
-        </html>
-    );
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>{children}</body>
+    </html>
+  );
 }
